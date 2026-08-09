@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { getPaymentStatus } from '@base-org/account';
+import { getPaymentStatus, pay } from '@base-org/account';
 import { BasePayButton } from '@base-org/account-ui/react';
 
 const TEST_AMOUNT = '0.01';
@@ -17,6 +17,28 @@ export function BasePayLab() {
     process.env.NEXT_PUBLIC_BPS_PAYMENT_ADDRESS?.trim() || DEFAULT_BPS_TEST_RECIPIENT;
   const [transactionId, setTransactionId] = useState('');
   const [statusMessage, setStatusMessage] = useState('No test payment submitted yet.');
+  const [isPaying, setIsPaying] = useState(false);
+
+  const handlePayment = async () => {
+    setIsPaying(true);
+    setStatusMessage('Opening Base Pay…');
+
+    try {
+      const payment = await pay({
+        amount: TEST_AMOUNT,
+        to: recipient,
+        testnet: true,
+      });
+
+      setTransactionId(payment.id);
+      setStatusMessage(`Payment submitted: ${payment.id}`);
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Unknown payment error';
+      setStatusMessage(`Payment failed: ${message}`);
+    } finally {
+      setIsPaying(false);
+    }
+  };
 
   const checkStatus = async () => {
     if (!transactionId) return;
@@ -65,22 +87,10 @@ export function BasePayLab() {
       </ul>
 
       <BasePayButton
-        paymentOptions={{
-          amount: TEST_AMOUNT,
-          to: recipient,
-          testnet: true,
-        }}
         colorScheme="light"
         size="large"
-        onPaymentResult={(result) => {
-          if (result.success) {
-            const id = result.transactionHash ?? '';
-            setTransactionId(id);
-            setStatusMessage(id ? `Payment submitted: ${id}` : 'Payment submitted.');
-          } else {
-            setStatusMessage(`Payment failed: ${result.error ?? 'Unknown error'}`);
-          }
-        }}
+        disabled={isPaying}
+        onClick={handlePayment}
       />
 
       <button className="secondaryButton" type="button" onClick={checkStatus} disabled={!transactionId}>
