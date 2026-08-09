@@ -5,7 +5,12 @@ import { getPaymentStatus } from '@base-org/account';
 import { BasePayButton } from '@base-org/account-ui/react';
 
 const TEST_AMOUNT = '0.01';
+const BPS_WEB3_IDENTITY = 'bpsexpress.base.eth';
 const DEFAULT_BPS_TEST_RECIPIENT = '0x78d9fda589d2eac76c86f9c490f288ae60bf92a0';
+
+function shortenAddress(address: string) {
+  return `${address.slice(0, 8)}…${address.slice(-4)}`;
+}
 
 export function BasePayLab() {
   const recipient =
@@ -42,16 +47,20 @@ export function BasePayLab() {
 
       <ul className="meta">
         <li>
+          <span>BPS Web3 Identity</span>
+          <strong>{BPS_WEB3_IDENTITY}</strong>
+        </li>
+        <li>
+          <span>Recipient</span>
+          <code title={recipient}>{shortenAddress(recipient)}</code>
+        </li>
+        <li>
           <span>Network</span>
           <strong>Base Sepolia</strong>
         </li>
         <li>
           <span>Amount</span>
           <strong>{TEST_AMOUNT} USDC</strong>
-        </li>
-        <li>
-          <span>Recipient</span>
-          <code>{recipient}</code>
         </li>
       </ul>
 
