@@ -88,7 +88,6 @@ export function BasePayLab() {
 
       <BasePayButton
         colorScheme="light"
-        size="large"
         disabled={isPaying}
         onClick={handlePayment}
       />
