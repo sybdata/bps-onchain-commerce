@@ -5,9 +5,11 @@ import { getPaymentStatus } from '@base-org/account';
 import { BasePayButton } from '@base-org/account-ui/react';
 
 const TEST_AMOUNT = '0.01';
+const DEFAULT_BPS_TEST_RECIPIENT = '0x78d9fda589d2eac76c86f9c490f288ae60bf92a0';
 
 export function BasePayLab() {
-  const recipient = process.env.NEXT_PUBLIC_BPS_PAYMENT_ADDRESS?.trim();
+  const recipient =
+    process.env.NEXT_PUBLIC_BPS_PAYMENT_ADDRESS?.trim() || DEFAULT_BPS_TEST_RECIPIENT;
   const [transactionId, setTransactionId] = useState('');
   const [statusMessage, setStatusMessage] = useState('No test payment submitted yet.');
 
@@ -32,19 +34,6 @@ export function BasePayLab() {
       setStatusMessage(`Status check failed: ${message}`);
     }
   };
-
-  if (!recipient || recipient === '0x0000000000000000000000000000000000000000') {
-    return (
-      <section className="card">
-        <h2>Base Pay configuration</h2>
-        <p>
-          Add a Base Sepolia recipient address to <code>NEXT_PUBLIC_BPS_PAYMENT_ADDRESS</code> before
-          enabling the test payment.
-        </p>
-        <div className="status">No payment address configured.</div>
-      </section>
-    );
-  }
 
   return (
     <section className="card">
