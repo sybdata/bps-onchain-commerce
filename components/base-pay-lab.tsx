@@ -20,6 +20,8 @@ export function BasePayLab() {
   const [isPaying, setIsPaying] = useState(false);
 
   const handlePayment = async () => {
+    if (isPaying) return;
+
     setIsPaying(true);
     setStatusMessage('Opening Base Pay…');
 
@@ -86,11 +88,7 @@ export function BasePayLab() {
         </li>
       </ul>
 
-      <BasePayButton
-        colorScheme="light"
-        disabled={isPaying}
-        onClick={handlePayment}
-      />
+      <BasePayButton colorScheme="light" onClick={handlePayment} />
 
       <button className="secondaryButton" type="button" onClick={checkStatus} disabled={!transactionId}>
         Check payment status
